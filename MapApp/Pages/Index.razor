@@ -1,0 +1,158 @@
+﻿@page "/"
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Index</PageTitle>
+
+@*
+<h3>
+    Show marker for Madrid
+    <RadzenCheckBox @bind-Value=@showMadridMarker />
+</h3>*@
+
+
+
+<br />
+<div style="width: 100%; display: table;">
+    <div style="display: table-row">
+        <div style="display: table-cell;">
+            <div id="map_canvas">
+
+                <RadzenGoogleMap @ref=map style="height: 768px; " Zoom=@zoom Center=@(new GoogleMapPosition() { Lat = 42.6977, Lng = 23.3219 }) MapClick=@OnMapClick MarkerClick=@OnMarkerClick ApiKey="XXX">
+                    <Markers>
+                        <RadzenGoogleMapMarker Title="London" Label="London" Position=@(new GoogleMapPosition() { Lat = 51.5074, Lng = 0.1278 }) />
+                        <RadzenGoogleMapMarker Title="Paris " Label="Paris" Position=@(new GoogleMapPosition() { Lat = 48.8566, Lng = 2.3522 }) />
+                        <RadzenGoogleMapMarker Title="Madrid " Label="Madrid" Position=@(new GoogleMapPosition() { Lat = 40.4168, Lng = -3.7038 }) />
+                        
+
+                        <RadzenGoogleMapMarker Title="Projeto Manancial Vivo" Label="Projeto Manancial Vivo" Position=@(new GoogleMapPosition() { Lat = -25.44227, Lng = -49.06795 }) />
+                        <RadzenGoogleMapMarker Title="PSA Miringuava" Label="PSA Miringuava" Position=@(new GoogleMapPosition() { Lat = -25.5307, Lng = -49.1958 }) />
+
+                        <RadzenGoogleMapMarker Title="São Paulo" Label="São Paulo" Position=@(new GoogleMapPosition() { Lat = -23.5489, Lng = -46.6388 }) />
+
+                        <RadzenGoogleMapMarker Title="Porto Alegre" Label="São Paulo" Position=@(new GoogleMapPosition() { Lat = -30.0277, Lng = -51.2287 }) />
+                    </Markers>
+                </RadzenGoogleMap>
+            </div>
+        </div>
+        <div style="width: 400px;display: table-cell;vertical-align: top">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Serviços Ambientais</RadzenText>
+                <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                Multiple="true" Placeholder="Select..." Data=@ServicosAmbientais TValue="string"
+                                Change=@(args => OnChange(args, "DropDown with multiple selection")) Class="w-100" />
+            </RadzenCard>
+
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Região</RadzenText>
+                <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                Multiple="true" Placeholder="Select..." Data=@regioes TValue="string"
+                                Change=@(args => OnChange(args, "DropDown with multiple selection")) Class="w-100" />
+            </RadzenCard>
+
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Status do projeto</RadzenText>
+                <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                 Multiple="true" Placeholder="Select..." Data=@status TValue="string"
+                                Change=@(args => OnChange(args, "DropDown with multiple selection")) Class="w-100" />
+            </RadzenCard>
+
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Tipo do projeto</RadzenText>
+                <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                 Multiple="true" Placeholder="Select..." Data=@tipos TValue="string"
+                                Change=@(args => OnChange(args, "DropDown with multiple selection")) Class="w-100" />
+            </RadzenCard>
+
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Atores envolvidos</RadzenText>
+                <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                Multiple="true" Placeholder="Select..." Data=@atores TValue="string"
+                                Change=@(args => OnChange(args, "DropDown with multiple selection")) Class="w-100" />
+            </RadzenCard>
+
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Incentivo econômico</RadzenText>
+                <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                Multiple="true" Placeholder="Select..." Data=@incentivos TValue="string"
+                                Change=@(args => OnChange(args, "DropDown with multiple selection")) Class="w-100" />
+            </RadzenCard>
+
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Período</RadzenText>
+                <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                 Multiple="true" Placeholder="Select..." Data=@periodos TValue="string"
+                                Change=@(args => OnChange(args, "DropDown with multiple selection")) Class="w-100" />
+            </RadzenCard>
+
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Área</RadzenText>
+                <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                @bind-Value=@multipleValues Multiple="true" Placeholder="Select..." Data=@anyValues
+                                Change=@(args => OnChange(args, "DropDown with multiple selection")) Class="w-100" />
+            </RadzenCard>
+        </div>
+    </div>
+</div>
+
+@code {
+    int zoom = 3;
+    bool showMadridMarker;
+    RadzenGoogleMap map;
+
+    // EventConsole console;
+
+    void OnMapClick(GoogleMapClickEventArgs args)
+    {
+    }
+
+    
+ 
+
+    IEnumerable<string> ServicosAmbientais = new string[] { "Provisão", "Suporte", "Regulação", "Culturais" };
+
+    IEnumerable<string> multipleValues = new string[] {};
+    IEnumerable<string> anyValues = new string[] { "Xpto", "Abc", "123", "Blablabla" };
+
+    IEnumerable<string> regioes = new string[] { "Sul", "Paraná", "Curitiba", "RMC" };
+    IEnumerable<string> status = new string[] { "Inativos concluídos", "Inativos por interrupção", "Em desenvolvimento ", "Concluídos" };
+    IEnumerable<string> tipos = new string[] { "Regulação", "Suporte", "Provisão", "Cultural" };
+    IEnumerable<string> atores = new string[] { "Fundação O Boticário", "Copel", "Sanepar", "Instituto das Águas" };
+    IEnumerable<string> incentivos = new string[] { "Público", "Privado" };
+    IEnumerable<string> periodos = new string[] { "2018", "2019", "2020", "2021", "2022", "2023" };
+
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    void OnChange(object value, string name)
+    {
+        var str = value is IEnumerable<object> ? string.Join(", ", (IEnumerable<object>)value) : value;
+    }
+
+    void OnChangeDisabled(object value, string name)
+    {
+        var str = value is IEnumerable<int> ? string.Join(", ", (IEnumerable<int>)value) : value;
+    }
+
+
+    async Task OnMarkerClick(RadzenGoogleMapMarker marker)
+    {
+        var message = $"<b>{marker.Title}</b><br />Cidade: Xpto<br />Tipo de projeto: Abc<br />Nome: abc123<br />Status: Xyz";
+
+        var code = $@"
+var map = Radzen['{map.UniqueID}'].instance;
+var marker = map.markers.find(m => m.title == '{marker.Title}');
+if(window.infoWindow) {{window.infoWindow.close();}}
+window.infoWindow = new google.maps.InfoWindow({{content: '{message}'}});
+setTimeout(() => window.infoWindow.open(map, marker), 200);
+";
+
+        await JSRuntime.InvokeVoidAsync("eval", code);
+    }
+}
